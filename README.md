@@ -5,7 +5,7 @@ Usage
 
 ```
 $ cd <service diagnostics bundle directory>
-% sbun
+$ sbun
 ```
 
 Features
