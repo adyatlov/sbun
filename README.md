@@ -11,4 +11,11 @@ $ cd <service diagnostics bundle directory>
 Features
 --------
 
-Writes service task list with task name, ID, starting, running and killing timestamps in a CSV format to the standard output.
+Writes service task list to the standard output in the CVS format. The order of columns is:
+
+1. task name
+1. starting timestamp
+1. running timestamp
+1. killing timestamp
+1. task ID
+1. path to the task directory
