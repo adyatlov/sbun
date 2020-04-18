@@ -1,5 +1,6 @@
 # sbun
 Tool for analyzing [DC/OS service diagnostics bundle](https://support.d2iq.com/s/article/create-service-diag-bundle)
+
 Usage
 -----
 
