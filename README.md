@@ -12,7 +12,7 @@ $ sbun
 Features
 --------
 
-Writes service task list to the standard output in the CVS format. The order of columns is:
+Writes service task list to the standard output in the CSV format. The order of columns is:
 
 1. task name
 1. starting timestamp
