@@ -11,7 +11,7 @@ import (
 
 // starting_20200416T110149-running_20200416T112050-killed_20200416T114052__kafka-2-broker__06e119a6-b6bb-4dae-8229-799cdf54c752
 var taskIDRegexp = regexp.MustCompile(`__(.+)__(.+)$`)
-var taskStatusRegexp = regexp.MustCompile(`(starting|running|killed)_([0-9T]*)`)
+var taskStatusRegexp = regexp.MustCompile(`(failed|starting|running|killed)_([0-9T]*)`)
 
 type Task struct {
 	ID      string
