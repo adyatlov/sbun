@@ -16,6 +16,7 @@ Writes service task list to the standard output in the CSV format. The order of 
 1. starting timestamp
 1. running timestamp
 1. killed timestamp
+1. failed timestamp
 1. task ID
 1. path to the task directory
 

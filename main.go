@@ -20,6 +20,7 @@ type Task struct {
 	Staring time.Time
 	Running time.Time
 	Killed  time.Time
+	Failed  time.Time
 }
 
 func (t Task) IsKilled() bool {
@@ -51,6 +52,7 @@ func ParseTask(dirName string) (Task, error) {
 	task.Staring = statuses["starting"]
 	task.Running = statuses["running"]
 	task.Killed = statuses["killed"]
+	task.Failed = statuses["failed"]
 	return task, nil
 }
 
@@ -76,6 +78,7 @@ func main() {
 			printTime(t.Staring),
 			printTime(t.Running),
 			printTime(t.Killed),
+			printTime(t.Failed),
 			t.ID,
 			t.DirName})
 	}
