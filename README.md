@@ -1,24 +1,22 @@
-# sbun
+# SBun
 Tool for analyzing [DC/OS service diagnostics bundle](https://support.d2iq.com/s/article/create-service-diag-bundle)
 
 ## Usage
 
 ```
-$ cd <service diagnostics bundle directory>
-$ sbun
+$ sbun [-p <service diagnostics bundle directory>] <command>
+```
+
+Launch the following command to see the list of commands:
+
+```
+$ sbun help
 ```
 
 ## Features
 
-Writes service task list to the standard output in the CSV format. The order of columns is:
-
-1. task name
-1. starting timestamp
-1. running timestamp
-1. killed timestamp
-1. failed timestamp
-1. task ID
-1. path to the task directory
+* Writes service task list to the standard output or file in the CSV format. 
+* Checks for updates and updates itself.
 
 ## How to release
 
