@@ -37,7 +37,7 @@ func printTasks(cmd *cobra.Command, args []string) {
 
 func init() {
 	taskcsvCmd := &cobra.Command{
-		Use:   "taskcsv",
+		Use:   "task-csv",
 		Short: "Print service task list",
 		Long: "Print service task list in the CSV format to the standard output or file. The order of columns is: " +
 			"<task name>, <starting timestamp>, <running timestamp>, <killed timestamp>, <failed timestamp>, <task ID>, " +
