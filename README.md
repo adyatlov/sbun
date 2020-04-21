@@ -1,6 +1,48 @@
 # SBun
 Tool for analyzing [DC/OS service diagnostics bundle](https://support.d2iq.com/s/article/create-service-diag-bundle)
 
+
+## Features
+
+* Writes service task list to the standard output or file in the CSV format. 
+* Checks for updates and updates itself.
+
+## Installation
+
+### macOS
+
+1. Download and unpack the binary:
+
+```
+$ curl -O -L https://github.com/adyatlov/sbun/releases/latest/download/sbun_darwin_amd64.tar.gz && tar -zxvf sbun_darwin_amd64.tar.gz
+```
+
+2. Move the `sbun` binary to one of the directories in the `PATH`.
+
+### Linux
+
+1. Download and unpack the binary:
+
+```
+$ curl -O -L https://github.com/adyatlov/sbun/releases/latest/download/sbun_linux_amd64.tar.gz && tar -zxvf sbun_linux_amd64.tar.gz
+```
+
+2. Move the `sbun` binary to one of the directories in the `PATH`.
+
+### Windows
+
+1. Download [the command](https://github.com/adyatlov/sbun/releases/latest/download/sbun_windows_amd64.tar.gz)
+2. Extract it from the archive and move the `sbun` binary to one of the folders in the `PATH`.
+
+### From sources
+
+1. Install [Go compiler](https://golang.org/dl/).
+2. Run the following command in your terminal:
+
+```bash
+$ go get github.com/adyatlov/sbun
+```
+
 ## Usage
 
 ```
@@ -12,11 +54,6 @@ Launch the following command to see the list of commands:
 ```
 $ sbun help
 ```
-
-## Features
-
-* Writes service task list to the standard output or file in the CSV format. 
-* Checks for updates and updates itself.
 
 ## How to release
 
