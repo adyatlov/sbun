@@ -12,17 +12,26 @@ import (
 func printTasks(cmd *cobra.Command, args []string) {
 	writer := os.Stdout
 	o := cmd.Flag("output")
-	if o.Changed {
-		var err error
-		writer, err = os.Create(o.Value.String())
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Cannot create file: %v", err.Error())
-			os.Exit(1)
-		}
+	O := cmd.Flag("default-name")
+	if o.Changed && O.Changed {
+		fmt.Fprintln(os.Stderr, "ERROR: Flags -o (--output) and -O (--default-name) are mutually exclusive. "+
+			"Please use only one of them.")
+		os.Exit(1)
 	}
-	err := taskcsv.WriteCsv(bundlePath, writer)
+	var err error
+	if o.Changed {
+		writer, err = os.Create(o.Value.String())
+	}
+	if O.Changed {
+		writer, err = os.Create("tasks.csv")
+	}
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err.Error())
+		fmt.Fprintf(os.Stderr, "ERROR: Cannot create file: %v", err.Error())
+		os.Exit(1)
+	}
+	err = taskcsv.WriteCsv(bundlePath, writer)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "ERROR: %v\n", err.Error())
 	}
 }
 
@@ -37,5 +46,7 @@ func init() {
 	}
 	taskcsvCmd.Flags().StringP("output", "o", "",
 		"path to the output CSV file")
+	taskcsvCmd.Flags().BoolP("default-name", "O", false,
+		"write output to the tasks.csv file")
 	rootCmd.AddCommand(taskcsvCmd)
 }
