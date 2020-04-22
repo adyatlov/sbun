@@ -15,7 +15,7 @@ import (
 	"runtime"
 	"time"
 
-	version "github.com/hashicorp/go-version"
+	"github.com/hashicorp/go-version"
 )
 
 var httpClient = http.Client{Timeout: 5 * time.Second}
@@ -33,7 +33,7 @@ func CheckNewRelease() {
 	if thisVersion.GreaterThanOrEqual(latestVersion) {
 		return
 	}
-	fmt.Fprintf(os.Stderr, "Good news, everyone! New SBun version (v%s) is out, "+
+	_, _ = fmt.Fprintf(os.Stderr, "Good news, everyone! New SBun version (v%s) is out, "+
 		"you can read the release notes here: https://github.com/adyatlov/sbun/releases/latest\n",
 		latestVersion.String())
 	if outputRedirectedToFile() {
@@ -79,7 +79,7 @@ func (g gitHub) latestVersion() (*version.Version, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer closeCloser(resp.Body)
 	decoder := json.NewDecoder(resp.Body)
 	tags := make([]tag, 0)
 	if err := decoder.Decode(&tags); err != nil {
@@ -105,13 +105,13 @@ func (g gitHub) upgradeExecutable(name string) error {
 	if err != nil {
 		return err
 	}
-	defer os.Remove(tempFile.Name())
+	defer func() { _ = os.Remove(tempFile.Name()) }()
 	httpClient.Timeout = 5 * time.Minute
 	resp, err := httpClient.Get(newReleaseURL)
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer closeCloser(resp.Body)
 	gzReader, err := gzip.NewReader(resp.Body)
 	if err != nil {
 		return err
@@ -167,4 +167,10 @@ func containsString(slice []string, element string) bool {
 		}
 	}
 	return false
+}
+
+func closeCloser(c io.Closer) {
+	if err := c.Close(); err != nil {
+		_, _ = fmt.Fprintf(os.Stdout, "cannot close: %v", err.Error())
+	}
 }

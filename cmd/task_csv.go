@@ -6,15 +6,15 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/adyatlov/sbun/taskcsv"
+	"github.com/adyatlov/sbun/tools"
 )
 
-func printTasks(cmd *cobra.Command, args []string) {
+func printTasks(cmd *cobra.Command, _ []string) {
 	writer := os.Stdout
 	o := cmd.Flag("output")
 	O := cmd.Flag("default-name")
 	if o.Changed && O.Changed {
-		fmt.Fprintln(os.Stderr, "ERROR: Flags -o (--output) and -O (--default-name) are mutually exclusive. "+
+		_, _ = fmt.Fprintln(os.Stderr, "ERROR: Flags -o (--output) and -O (--default-name) are mutually exclusive. "+
 			"Please use only one of them.")
 		os.Exit(1)
 	}
@@ -26,17 +26,17 @@ func printTasks(cmd *cobra.Command, args []string) {
 		writer, err = os.Create("tasks.csv")
 	}
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "ERROR: Cannot create file: %v", err.Error())
+		_, _ = fmt.Fprintf(os.Stderr, "ERROR: Cannot create file: %v", err.Error())
 		os.Exit(1)
 	}
-	err = taskcsv.WriteCsv(bundlePath, writer)
+	err = tools.WriteCsv(bundlePath, writer)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "ERROR: %v\n", err.Error())
+		_, _ = fmt.Fprintf(os.Stderr, "ERROR: %v\n", err.Error())
 	}
 }
 
 func init() {
-	taskcsvCmd := &cobra.Command{
+	taskCsvCmd := &cobra.Command{
 		Use:   "task-csv",
 		Short: "Print service task list",
 		Long: "Print service task list in the CSV format to the standard output or file. The order of columns is: " +
@@ -44,9 +44,9 @@ func init() {
 			"<path to the task directory>",
 		Run: printTasks,
 	}
-	taskcsvCmd.Flags().StringP("output", "o", "",
+	taskCsvCmd.Flags().StringP("output", "o", "",
 		"path to the output CSV file")
-	taskcsvCmd.Flags().BoolP("default-name", "O", false,
+	taskCsvCmd.Flags().BoolP("default-name", "O", false,
 		"write output to the tasks.csv file")
-	rootCmd.AddCommand(taskcsvCmd)
+	rootCmd.AddCommand(taskCsvCmd)
 }
