@@ -138,7 +138,7 @@ func (g gitHub) upgradeExecutable(name string) error {
 	if err := os.Rename(tempFile.Name(), executable); err != nil {
 		return err
 	}
-	if err := os.Chmod(executable, 755); err != nil {
+	if err := os.Chmod(executable, 0755); err != nil {
 		return err
 	}
 	return nil

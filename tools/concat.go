@@ -26,9 +26,6 @@ func Concat(bundlePath string, compress bool) error {
 	if err != nil {
 		return fmt.Errorf("cannot parse tasks when concatenating: %v", err)
 	}
-	if err != nil {
-		return fmt.Errorf("cannot concatenatenate tasks logs: %v", err)
-	}
 	errs := make([]string, 0, 2)
 	for _, task := range tasks {
 		for _, dir := range []string{"", taskLogDirName, executorLogDirName} {

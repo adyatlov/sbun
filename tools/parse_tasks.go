@@ -79,7 +79,7 @@ func parseTasks(bundlePath string) ([]Task, error) {
 	if len(tasks) == 0 {
 		return nil, fmt.Errorf("\"%v\" directory doesn't contain task directories", tasksDirName)
 	}
-	for i, _ := range tasks {
+	for i := range tasks {
 		tasks[i].DirNameAbsolute = filepath.Join(tasksDir, tasks[i].DirName)
 	}
 	return tasks, nil
