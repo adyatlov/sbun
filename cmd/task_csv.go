@@ -41,7 +41,7 @@ func init() {
 		Short: "Print service task list",
 		Long: "Print service task list in the CSV format to the standard output or file. The order of columns is: " +
 			"<task name>, <starting timestamp>, <running timestamp>, <killed timestamp>, <failed timestamp>, <task ID>, " +
-			"<path to the task directory>",
+			"<has logs>, <path to the task directory>",
 		Run: printTasks,
 	}
 	taskCsvCmd.Flags().StringP("output", "o", "",

@@ -18,32 +18,32 @@ func Test_fileNumber(t *testing.T) {
 	}{
 		{
 			"returns 0 when there is no number and no extension",
-			args{"stdout", stdoutNumberRegexp},
+			args{"stdout", stdoutRegexp},
 			0,
 		},
 		{
 			"returns a correct number when there is a number and no extension",
-			args{"stdout.1", stdoutNumberRegexp},
+			args{"stdout.1", stdoutRegexp},
 			1,
 		},
 		{
 			"returns a correct number when there is a number > 9, and no extension",
-			args{"stdout.999", stdoutNumberRegexp},
+			args{"stdout.999", stdoutRegexp},
 			999,
 		},
 		{
 			"returns 0 when there is no number with extension",
-			args{"stdout.gz", stdoutNumberRegexp},
+			args{"stdout.gz", stdoutRegexp},
 			0,
 		},
 		{
 			"returns a correct number when there is a number with extension",
-			args{"stdout.1.gz", stdoutNumberRegexp},
+			args{"stdout.1.gz", stdoutRegexp},
 			1,
 		},
 		{
 			"returns a correct number when there is a number > 9, with extension",
-			args{"stdout.999.gz", stdoutNumberRegexp},
+			args{"stdout.999.gz", stdoutRegexp},
 			999,
 		},
 	}
@@ -71,7 +71,7 @@ func Test_filterLogFilePaths(t *testing.T) {
 			args{
 				[]string{"/path/to/logs/stdout.gz", "stdout", "stdout.2.gz", "stdout.3",
 					"unexpected_file", "another_unexpected_file."},
-				stdoutNumberRegexp,
+				stdoutRegexp,
 			},
 			[]string{"/path/to/logs/stdout.gz", "stdout", "stdout.2.gz", "stdout.3"},
 		},
@@ -79,7 +79,7 @@ func Test_filterLogFilePaths(t *testing.T) {
 			"does not filter expected files",
 			args{
 				[]string{"/path/to/logs/stdout.gz", "stdout", "stdout.2.gz", "stdout.3"},
-				stdoutNumberRegexp,
+				stdoutRegexp,
 			},
 			[]string{"/path/to/logs/stdout.gz", "stdout", "stdout.2.gz", "stdout.3"},
 		},
@@ -112,7 +112,7 @@ func Test_sortFiles(t *testing.T) {
 					"path/to/task/logs/stdout.2.gz",
 					"path/to/task/logs/stdout.123",
 				},
-				stdoutNumberRegexp,
+				stdoutRegexp,
 			},
 			[]string{
 				"path/to/task/logs/stdout.123",

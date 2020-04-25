@@ -9,11 +9,18 @@ import (
 	"time"
 )
 
-const tasksDirName = "tasks"
+const DirNameTasks = "tasks"
 
 // starting_20200416T110149-running_20200416T112050-killed_20200416T114052__kafka-2-broker__06e119a6-b6bb-4dae-8229-799cdf54c752
 var taskIDRegexp = regexp.MustCompile(`__(.+)__(.+)$`)
 var taskStatusRegexp = regexp.MustCompile(`(failed|starting|running|killed)_([0-9T]*)`)
+
+// stdout.1.gz, stdout.gz, stdout, stdout.1
+var stdoutRegexp = regexp.MustCompile(`^stdout(\.[0-9]+)?(\.gz)?$`)
+var stderrRegexp = regexp.MustCompile(`^stderr(\.[0-9]*)?(\.gz)?$`)
+
+// stdout_all, stderr_all, stdout_all.gz, stderr_all.gz
+var stdAllRegexp = regexp.MustCompile(`^(stderr|stdout)_all(\.gz)?$`)
 
 type Task struct {
 	ID              string
@@ -24,9 +31,10 @@ type Task struct {
 	Running         time.Time
 	Killed          time.Time
 	Failed          time.Time
+	HasLogs         bool
 }
 
-func parseTask(dirName string) (Task, error) {
+func parseTaskDirName(dirName string) (Task, error) {
 	task := Task{}
 	idTokens := taskIDRegexp.FindStringSubmatch(dirName)
 	if len(idTokens) != 3 {
@@ -55,18 +63,18 @@ func parseTask(dirName string) (Task, error) {
 	return task, nil
 }
 
-func parseTasks(bundlePath string) ([]Task, error) {
-	tasksDir := filepath.Join(bundlePath, tasksDirName)
+func FindTasks(bundlePath string) ([]Task, error) {
+	tasksDir := filepath.Join(bundlePath, DirNameTasks)
 	taskFiles, err := ioutil.ReadDir(tasksDir)
 	if err != nil {
-		return nil, fmt.Errorf("cannot list files in the \"%v\" directory: %v", tasksDirName, err)
+		return nil, fmt.Errorf("cannot list files in the \"%v\" directory: %v", DirNameTasks, err)
 	}
 	tasks := make([]Task, 0, len(taskFiles))
 	for _, f := range taskFiles {
 		if !f.IsDir() {
 			continue
 		}
-		task, err := parseTask(f.Name())
+		task, err := parseTaskDirName(f.Name())
 		if err != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "WARNING: cannot parse the directory name \"%v\". "+
 				"If you know that this directory was created by the service diagnostics bundle tool, "+
@@ -74,13 +82,36 @@ func parseTasks(bundlePath string) ([]Task, error) {
 				f.Name(), err.Error())
 			continue
 		}
+		task.DirNameAbsolute = filepath.Join(tasksDir, task.DirName)
+		task.HasLogs = hasLogs(task.DirNameAbsolute)
 		tasks = append(tasks, task)
 	}
 	if len(tasks) == 0 {
-		return nil, fmt.Errorf("\"%v\" directory doesn't contain task directories", tasksDirName)
-	}
-	for i := range tasks {
-		tasks[i].DirNameAbsolute = filepath.Join(tasksDir, tasks[i].DirName)
+		return nil, fmt.Errorf("\"%v\" directory doesn't contain task directories", DirNameTasks)
 	}
 	return tasks, nil
+}
+
+func hasLogs(taskDir string) bool {
+	var has bool
+	err := filepath.Walk(taskDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			_, _ = fmt.Fprintf(os.Stderr, "Cannot walk into path %v: %v", path, err)
+			return nil
+		}
+		if info.IsDir() {
+			return nil
+		}
+		if stdoutRegexp.MatchString(info.Name()) ||
+			stderrRegexp.MatchString(info.Name()) ||
+			stdAllRegexp.MatchString(info.Name()) {
+			has = true
+			return filepath.SkipDir
+		}
+		return nil
+	})
+	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "Cannot walk: %v", err)
+	}
+	return has
 }

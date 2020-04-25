@@ -8,7 +8,7 @@ import (
 )
 
 func WriteCsv(bundlePath string, writer *os.File) error {
-	tasks, err := parseTasks(bundlePath)
+	tasks, err := FindTasks(bundlePath)
 	if err != nil {
 		return fmt.Errorf("cannot write CSV: %v", err.Error())
 	}
@@ -20,6 +20,7 @@ func WriteCsv(bundlePath string, writer *os.File) error {
 			printTime(t.Killed),
 			printTime(t.Failed),
 			t.ID,
+			fmt.Sprintf("%v", t.HasLogs),
 			t.DirName})
 		if err != nil {
 			return fmt.Errorf("cannot write to the CSV output: %v", err.Error())

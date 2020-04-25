@@ -16,13 +16,12 @@ import (
 const (
 	taskLogDirName     = "task"
 	executorLogDirName = "executor"
+	stdoutAllFileName  = "stdout_all"
+	stderrAllFileName  = "stderr_all"
 )
 
-var stdoutNumberRegexp = regexp.MustCompile(`^stdout(\.[0-9]+)?(\.gz)?$`)
-var stderrNumberRegexp = regexp.MustCompile(`^stderr(\.[0-9]*)?(\.gz)?$`)
-
 func Concat(bundlePath string, compress bool) error {
-	tasks, err := parseTasks(bundlePath)
+	tasks, err := FindTasks(bundlePath)
 	if err != nil {
 		return fmt.Errorf("cannot parse tasks when concatenating: %v", err)
 	}
@@ -61,11 +60,11 @@ func concat(dir string, compress bool) error {
 }
 
 func concatStdout(dir string, compress bool) error {
-	return concatInDirectory(dir, stdoutNumberRegexp, compress, filepath.Join(dir, "stdout_all"))
+	return concatInDirectory(dir, stdoutRegexp, compress, filepath.Join(dir, stdoutAllFileName))
 }
 
 func concatStderr(dir string, compress bool) error {
-	return concatInDirectory(dir, stderrNumberRegexp, compress, filepath.Join(dir, "stderr_all"))
+	return concatInDirectory(dir, stderrRegexp, compress, filepath.Join(dir, stderrAllFileName))
 }
 
 func concatInDirectory(dir string, r *regexp.Regexp, compress bool, outName string) error {
@@ -142,7 +141,7 @@ func removeFiles(paths []string) error {
 func filterPathsByFileName(paths []string, r *regexp.Regexp) []string {
 	expectedPaths := make([]string, 0, len(paths))
 	for _, path := range paths {
-		if len(r.FindStringSubmatch(filepath.Base(path))) == 0 {
+		if !r.MatchString(filepath.Base(path)) {
 			continue
 		}
 		expectedPaths = append(expectedPaths, path)
