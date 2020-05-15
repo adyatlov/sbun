@@ -26,7 +26,6 @@ func tasksWithLogs(cmd *cobra.Command, _ []string) {
 		_, _ = fmt.Fprintln(os.Stderr, "No tasks with logs found.")
 		return
 	}
-	fmt.Printf("DEBUG: %v\n", newDir)
 	if err := os.RemoveAll(newDir); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "Cannot remove directory: %v\n", err)
 	}

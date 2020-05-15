@@ -13,15 +13,27 @@ func WriteCsv(bundlePath string, writer *os.File) error {
 		return fmt.Errorf("cannot write CSV: %v", err.Error())
 	}
 	csvWriter := csv.NewWriter(writer)
+	err = csvWriter.Write([]string{
+		"Name",
+		"Staring",
+		"Running",
+		"Killed",
+		"Failed",
+		"ID",
+		"Has Logs",
+		"Dir Name",
+	})
 	for _, t := range tasks {
-		err = csvWriter.Write([]string{t.Name,
+		err = csvWriter.Write([]string{
+			t.Name,
 			printTime(t.Staring),
 			printTime(t.Running),
 			printTime(t.Killed),
 			printTime(t.Failed),
 			t.ID,
 			fmt.Sprintf("%v", t.HasLogs),
-			t.DirName})
+			t.DirName,
+		})
 		if err != nil {
 			return fmt.Errorf("cannot write to the CSV output: %v", err.Error())
 		}
