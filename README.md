@@ -6,6 +6,7 @@ Tool for analyzing [DC/OS service diagnostics bundle](https://support.d2iq.com/s
 
 * Writes service task list to the standard output or file in the CSV format. 
 * Checks for updates and updates itself.
+* Detects an localizes tasks with no logs.
 
 ## Installation
 
